@@ -1,0 +1,220 @@
+// ~/.config/niri/config.kdl
+// Niri scrollable-tiling Wayland compositor configuration.
+// KDL format: https://kdl.dev | Niri wiki: https://github.com/niri-wm/niri/wiki
+// Config is live-reloaded on save. Validate with: niri validate
+
+// ─── STARTUP ──────────────────────────────────────────────────────────────────
+// Programs to launch when niri starts.
+spawn-sh-at-startup "qs -c noctalia-shell"
+
+
+// spawn-at-startup "waybar"
+// spawn-at-startup "mako"
+// spawn-at-startup "swww-daemon"
+
+// ─── INPUT ────────────────────────────────────────────────────────────────────
+// Keyboard, mouse, and touchpad settings.
+// Run `niri msg outputs` or check xkeyboard-config(7) for layout options.
+
+input {
+    keyboard {
+        xkb {
+            layout "us"
+            // options "ctrl:nocaps"
+        }
+        numlock
+    }
+
+    mouse {
+        // accel-profile "flat"   // "flat" disables pointer acceleration
+        // accel-speed 0.0
+    }
+
+    touchpad {
+        tap
+        natural-scroll
+        // dwt                    // disable-while-typing
+        // accel-profile "flat"
+    }
+
+    // focus-follows-mouse        // focus window under cursor automatically
+    // warp-mouse-to-focus        // warp cursor to newly focused window
+}
+
+// ─── OUTPUTS (MONITORS) ───────────────────────────────────────────────────────
+// Configure each connected display by its connector name.
+// Find connector names with: niri msg outputs
+//
+// Position is in logical (scaled) pixels. DP-1 is on the left at x=0,
+// DP-2 is placed directly to its right at x=2560 (same resolution, scale 1).
+
+output "DP-2" {
+    // Primary display — left monitor
+    mode "2560x1440@170.000"
+    scale 1.0
+    transform "normal"
+    position x=0 y=0
+}
+
+output "DP-1" {
+    // Secondary display — right monitor
+    mode "2560x1440@170.000"
+    scale 1.0
+    transform "normal"
+    position x=2560 y=0
+}
+
+// ─── LAYOUT ───────────────────────────────────────────────────────────────────
+// Controls gaps, window widths, borders, and focus ring appearance.
+
+layout {
+    gaps 5
+
+    // Which column widths Mod+R cycles through.
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    // Default width for new windows.
+    default-column-width { proportion 0.5; }
+
+    // "never" | "always" | "on-overflow"
+    center-focused-column "never"
+
+    // Highlight ring drawn around the focused window.
+    focus-ring {
+        width 2.5
+        active-color "#7fc8ff"
+        inactive-color "#404040"
+    }
+
+    // Persistent border around all windows (disable focus-ring if using this).
+    border {
+        off
+        width 2
+        active-color "#ffc87f"
+        inactive-color "#404040"
+    }
+}
+
+// ─── ANIMATIONS ───────────────────────────────────────────────────────────────
+// Control speed and style of built-in transitions.
+// Remove this block entirely to use niri's defaults.
+
+animations {
+    // slowdown 1.0              // global multiplier; higher = slower
+
+    workspace-switch {
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+    }
+
+    window-open {
+        duration-ms 150
+        curve "ease-out-expo"
+    }
+
+    window-close {
+        duration-ms 120
+        curve "ease-out-quad"
+    }
+}
+
+// ─── WINDOW RULES ─────────────────────────────────────────────────────────────
+// Apply settings to specific windows matched by app-id or title.
+// Run `niri msg windows` to find app-ids of open windows.
+
+// window-rule {
+//     match app-id="firefox"
+//     default-column-width { proportion 0.66667; }
+// }
+
+// window-rule {
+//     match app-id="org.gnome.Calculator"
+//     default-column-width { fixed 400; }
+//     open-floating true
+// }
+
+// Uncomment to strip client-side decorations from all windows.
+// prefer-no-csd
+
+// ─── SCREENSHOT ───────────────────────────────────────────────────────────────
+// Directory where screenshots are saved. ~ and $HOME are expanded.
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+// ─── KEY BINDINGS ─────────────────────────────────────────────────────────────
+// Mod is Super (Win key) when running standalone, Alt inside another compositor.
+// All binds must be defined here; niri has no built-in defaults.
+
+binds {
+    // ── Launchers ──
+    Mod+Return  { spawn "kitty"; }
+    Mod+D       { spawn "fuzzel"; }
+    Super+Alt+L       { spawn "swaylock"; }
+
+    // ── Window management ──
+    Mod+Q             { close-window; }
+    Mod+F             { fullscreen-window; }
+    Mod+Shift+F       { toggle-window-floating; }
+    Mod+Shift+C       { center-column; }
+
+    // ── Focus movement ──
+    Mod+Left          { focus-column-left; }
+    Mod+Right         { focus-column-right; }
+    Mod+Up            { focus-window-up; }
+    Mod+Down          { focus-window-down; }
+    Mod+H             { focus-column-left; }
+    Mod+L             { focus-column-right; }
+    Mod+K             { focus-window-up; }
+    Mod+J             { focus-window-down; }
+
+    // ── Column movement ──
+    Mod+Shift+Left    { move-column-left; }
+    Mod+Shift+Right   { move-column-right; }
+    Mod+Shift+H       { move-column-left; }
+    Mod+Shift+L       { move-column-right; }
+
+    // ── Column width cycling ──
+    Mod+R             { switch-preset-column-width; }
+    Mod+Shift+R       { reset-window-height; }
+    Mod+Minus         { set-column-width "-10%"; }
+    Mod+Equal         { set-column-width "+10%"; }
+    Mod+Shift+Minus   { set-window-height "-10%"; }
+    Mod+Shift+Equal   { set-window-height "+10%"; }
+
+    // ── Workspace switching ──
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+
+    // ── Monitor focus ──
+    Mod+Tab           { focus-monitor-next; }
+    Mod+Shift+Tab     { move-column-to-monitor-next; }
+
+    // ── Screenshots ──
+    Print             { screenshot; }
+    Mod+Print         { screenshot-window; }
+    Ctrl+Print        { screenshot-screen; }
+
+    // ── Session ──
+    Mod+Shift+E { quit; }
+    Mod+Shift+P { power-off-monitors; }
+
+    // ── Media keys ──
+    XF86AudioRaiseVolume  allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+    XF86AudioLowerVolume  allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioMute         allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioPlay         allow-when-locked=true { spawn "playerctl" "play-pause"; }
+    XF86AudioNext         allow-when-locked=true { spawn "playerctl" "next"; }
+    XF86AudioPrev         allow-when-locked=true { spawn "playerctl" "previous"; }
+}
