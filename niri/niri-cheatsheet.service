@@ -1,0 +1,13 @@
+[Unit]
+Description=Niri Hotkey Cheatsheet Widget
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 %h/.config/niri/niri-cheatsheet.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=graphical-session.target

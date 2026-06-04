@@ -3,6 +3,10 @@
 // KDL format: https://kdl.dev | Niri wiki: https://github.com/niri-wm/niri/wiki
 // Config is live-reloaded on save. Validate with: niri validate
 
+environment {
+    QT_QPA_PLATFORMTHEME "kde"
+}
+
 // ─── STARTUP ──────────────────────────────────────────────────────────────────
 // Programs to launch when niri starts.
 spawn-sh-at-startup "qs -c noctalia-shell"
@@ -48,7 +52,7 @@ input {
 // Position is in logical (scaled) pixels. DP-1 is on the left at x=0,
 // DP-2 is placed directly to its right at x=2560 (same resolution, scale 1).
 
-output "DP-2" {
+output "DP-1" {
     // Primary display — left monitor
     mode "2560x1440@170.000"
     scale 1.0
@@ -56,7 +60,7 @@ output "DP-2" {
     position x=0 y=0
 }
 
-output "DP-1" {
+output "DP-2" {
     // Secondary display — right monitor
     mode "2560x1440@170.000"
     scale 1.0
@@ -136,6 +140,13 @@ animations {
 //     open-floating true
 // }
 
+    window-rule {
+    match app-id="kitty"
+    draw-border-with-background false
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
 // Uncomment to strip client-side decorations from all windows.
 // prefer-no-csd
 
@@ -153,6 +164,7 @@ binds {
     Mod+Return  { spawn "kitty"; }
     Mod+D       { spawn "fuzzel"; }
     Super+Alt+L       { spawn "swaylock"; }
+    Mod+Slash         { spawn "bash" "-c" "~/.config/niri/niri-cheatsheet-toggle.sh"; }
 
     // ── Window management ──
     Mod+Q             { close-window; }
@@ -218,3 +230,5 @@ binds {
     XF86AudioNext         allow-when-locked=true { spawn "playerctl" "next"; }
     XF86AudioPrev         allow-when-locked=true { spawn "playerctl" "previous"; }
 }
+
+include "./noctalia.kdl"
